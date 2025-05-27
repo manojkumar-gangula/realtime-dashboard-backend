@@ -27,9 +27,13 @@ io.on("connection", (socket) => {
   socket.on("join_room", (roomId) => {
     console.log("Joined room");
     //We are maintaining 1 -> 1 mapping. Meaning one socket is associated with only one Room.
+    if (socketToRoom.get(socket.id)) {
+      socket.leave(socketToRoom.get(socket.id));
+      socketToRoom.delete(socket.id);
+    }
+    console.log("new room: " + roomId);
     socketToRoom.set(socket.id, roomId);
     console.log(JSON.stringify(socketToRoom));
-
     socket.join(roomId);
   });
 
