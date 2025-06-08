@@ -6,7 +6,7 @@ import { Server } from "socket.io";
 
 const app = express();
 const server = createServer(app);
-// 1 -> 1 Mapping, one socket can be only one room.
+// 1 -> 1 Mapping, one socket can be only in one room.
 const socketToRoom = new Map();
 const io = new Server(server, {
   cors: {
@@ -16,13 +16,15 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  // console.log("user connected, socket: " + JSON.stringify(socket));
-  // console.log(util.inspect(socket, { depth: null, colors: true }));
   //Receiving messages from Client
   socket.on("send_msg", (msg) => {
     socket.to(socketToRoom.get(socket.id)).emit("receive_msg", msg);
   });
 
+  socket.on("send_shape", (shape) => {
+    socket.to(socketToRoom.get(socket.id)).emit("receive_shape", shape);
+    console.log("Received & emitting shape: " + shape);
+  });
   //Joining room
   socket.on("join_room", (roomId) => {
     console.log("Joined room");
