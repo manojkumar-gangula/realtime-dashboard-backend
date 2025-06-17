@@ -25,6 +25,12 @@ io.on("connection", (socket) => {
     socket.to(socketToRoom.get(socket.id)).emit("receive_shape", shape);
     console.log("Received & emitting shape: " + shape);
   });
+
+  socket.on("send_dragshape_data", (dragShapeData) => {
+    socket
+      .to(socketToRoom.get(socket.id))
+      .emit("receive_dragshape_data", dragShapeData);
+  });
   //Joining room
   socket.on("join_room", (roomId) => {
     console.log("Joined room");
